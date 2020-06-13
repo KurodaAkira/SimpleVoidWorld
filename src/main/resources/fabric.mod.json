@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "simplevoidworld",
+  "name": "Simple Void World",
+  "version": "1.0.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.modmuss50.svw.SimpleVoidWorld"
+    ]
+  },
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  }
+}

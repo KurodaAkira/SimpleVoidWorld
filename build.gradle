@@ -1,24 +1,18 @@
-import scala.tools.nsc.io.Jar
-
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
 		maven {
             name = "Modmuss50"
-            url = "http://maven.modmuss50.me/"
+            url = "https://maven.modmuss50.me/"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath ("net.fabricmc:fabric-loom:0.2.6-SNAPSHOT") {
+            changing = true
+        }
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
+apply plugin: net.fabricmc.loom.LoomGradlePlugin
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -29,56 +23,24 @@ repositories {
         name = "Modmuss50"
         url = "http://maven.modmuss50.me/"
     }
+	mavenLocal()
 }
 
-version = "1.2.0"
+
+version = "3.1.0"
 
 def ENV = System.getenv()
 if (ENV.BUILD_NUMBER) {
     version = version + "." + "${System.getenv().BUILD_NUMBER}"
 }
 
-minecraft {
-	version = "1.12.1-14.22.0.2456"
-	mappings = "snapshot_20170624"
-    replace "@MODVERSION@", project.version
-    runDir = "run"
-    makeObfSourceJar = false
+dependencies {
+	minecraft "com.mojang:minecraft:1.15-pre2"
+	mappings "net.fabricmc:yarn:1.15-pre2+build.3:v2"
+	modCompile "net.fabricmc:fabric-loader:0.7.1+build.173"
+
+	//Fabric api
+	modCompile "net.fabricmc.fabric-api:fabric-api:0.4.16+build.268-1.15"
 }
 
 group = 'SimpleVoidWorld'
-
-
-dependencies {
-	compile('RebornCore:RebornCore-1.12:+:dev') {
-		transitive = false
-	}
-}
-
-processResources
-        {
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
-
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
-
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    exclude "**/*.psd"
-    classifier = 'dev'
-}
-
-jar {
-    exclude "**/*.psd"
-    classifier = 'universal'
-}
-
-artifacts {
-    archives deobfJar
-}
